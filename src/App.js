@@ -5,7 +5,6 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import { units, tens } from "./constants";
 
-//Testing commit
 function WriteCheque(props) {
   const classes = useStyles();
 
