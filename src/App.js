@@ -57,40 +57,45 @@ function WriteCheque(props) {
     }
   }
 
-  console.log("arrayOfScales: ", arrayOfScales);
+  // console.log("arrayOfScales: ", arrayOfScales);
 
   //Mini function that takes in a 3 digit value and returns it as words
   var getNumbersAsWords = (n) => {
     if (n === "0") return "";
     let word = "";
-    let intN = parseInt(n);
-    for (var i = n.length; i > 0; i--) {
+    //If the number has a teen in it (example: 2318)
+    if (n[1] === "1") {
       //Write the units
-      if (i === n.length) word = units[parseInt(n[i - 1])] + " " + word;
-      //Write the tens
-      if (i === n.length - 1) word = tens[parseInt(n[i - 1])] + " " + word;
+      //* get the teens from the units by adding both the units column with the tens column
+      word = units[parseInt(n[1] + n[2])] + " " + word;
       //Write the hundreds
-      if (i === n.length - 2 && units[parseInt(n[i - 1])] !== 0)
-        word = units[parseInt(n[i - 1])] + " hundred and " + word;
+      if (n[0] !== "0") {
+        console.log("this is happening");
+        word = units[n[0]] + " hundred and " + word;
+      }
+    } else {
+      for (var i = n.length; i > 0; i--) {
+        //Write the units
+        if (i === n.length) word = units[parseInt(n[i - 1])] + " " + word;
+        //Write the tens
+        if (i === n.length - 1) word = tens[parseInt(n[i - 1])] + " " + word;
+        //Write the hundreds
+        //Show the "And" based on whether any units or tens have been added to the string
+        if (i === n.length - 2 && n[0] !== "0")
+          if (!word.replace(/\s/g, "").length)
+            word = units[parseInt(n[i - 1])] + " hundred " + word;
+          else word = units[parseInt(n[i - 1])] + " hundred and " + word;
+      }
     }
-
     return word;
   };
 
-  if (initialNumber < 1000) {
-    return (
-      <Typography variant="h3" className={classes.cheque}>
-        {getNumbersAsWords(props.value)} dollars
-      </Typography>
-    );
-  }
-
   for (var i = 0; i < 4; i++) {
     console.log("finalWord :", finalWord);
+    console.log("array of scales[i]" + arrayOfScales[i]);
     finalWord = finalWord + getNumbersAsWords(arrayOfScales[i]);
 
     if (arrayOfScales[i] !== "000" && arrayOfScales[i] !== "0") {
-      console.log("array of scales" + arrayOfScales[i]);
       if (i === 0) finalWord = finalWord + " billion ";
       if (i === 1) finalWord = finalWord + " million ";
       if (i === 2) finalWord = finalWord + " thousand ";
