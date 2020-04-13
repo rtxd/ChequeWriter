@@ -10,6 +10,7 @@ import Link from "@material-ui/core/Link";
 
 function WriteCheque(props) {
   const classes = useStyles();
+  let throwError = false;
 
   //Check if we have to calculate cents
   let doesDecimalExist = false;
@@ -17,8 +18,19 @@ function WriteCheque(props) {
 
   let intNumber = parseInt(props.value);
   let stringNumber = props.value;
-
+  let wholeNumber = stringNumber.split(".")[0];
+  let fractionalNumber = stringNumber.split(".")[1];
+  console.log("fractionalNumber", fractionalNumber);
   let finalWord = "";
+
+  // Run validation checks on number
+  if (
+    parseInt(props.value) <= 2000000000 &&
+    (fractionalNumber < 100 || fractionalNumber == null)
+  )
+    throwError = false;
+  else throwError = true;
+
   //If the number is 0 then return zero
   if (intNumber === 0 || isNaN(intNumber)) {
     return (
@@ -28,38 +40,35 @@ function WriteCheque(props) {
     );
   }
 
-  let preDecimalNumber = stringNumber.split(".")[0];
   //Add zeros in front of the number so it has 10 digits
-  let amountOfZeros = 10 - preDecimalNumber.length;
+  let amountOfZeros = 10 - wholeNumber.length;
   for (let i = 0; i < amountOfZeros; i++) {
-    preDecimalNumber = "0" + preDecimalNumber;
+    wholeNumber = "0" + wholeNumber;
   }
 
   //Split the number into 4 sections, for example: 8462 --> [0][000][008][462]
-  console.log("preDecimalNumber", preDecimalNumber);
+  console.log("preDecimalNumber", wholeNumber);
   let arrayOfScales = [];
-  for (let i = 0; i < preDecimalNumber.length; i++) {
+  for (let i = 0; i < wholeNumber.length; i++) {
     if (i === 0) {
-      arrayOfScales.push(preDecimalNumber[i]);
+      arrayOfScales.push(wholeNumber[i]);
     }
     if (i === 1) {
       arrayOfScales.push(
-        preDecimalNumber[i] + preDecimalNumber[i + 1] + preDecimalNumber[i + 2]
+        wholeNumber[i] + wholeNumber[i + 1] + wholeNumber[i + 2]
       );
     }
     if (i === 4) {
       arrayOfScales.push(
-        preDecimalNumber[i] + preDecimalNumber[i + 1] + preDecimalNumber[i + 2]
+        wholeNumber[i] + wholeNumber[i + 1] + wholeNumber[i + 2]
       );
     }
     if (i === 7) {
       arrayOfScales.push(
-        preDecimalNumber[i] + preDecimalNumber[i + 1] + preDecimalNumber[i + 2]
+        wholeNumber[i] + wholeNumber[i + 1] + wholeNumber[i + 2]
       );
     }
   }
-
-  console.log("arrayOfScales: ", arrayOfScales);
 
   //Mini function that takes in a 3 digit value and returns it as words
   var getNumbersAsWords = (n) => {
@@ -103,9 +112,19 @@ function WriteCheque(props) {
     }
   }
 
+  // Throw Error if invalid number
+  if (throwError)
+    return (
+      <Typography variant="h3" className={classes.error}>
+        Invalid Number
+      </Typography>
+    );
+
+  //Final Return statement
   if (doesDecimalExist) {
     //Write the cents out
-    let stringCents = getNumbersAsWords("0" + stringNumber.split(".")[1]);
+    //TODO: make sure cents .5 returns fifty and not 5 cents
+    let stringCents = getNumbersAsWords("0" + fractionalNumber);
     return (
       <Typography variant="h3" className={classes.cheque}>
         {finalWord} dollars and {stringCents} cents
@@ -203,6 +222,11 @@ const useStyles = makeStyles((theme) => ({
   cheque: {
     maxWidth: "700px",
     textAlign: "center",
+  },
+  error: {
+    maxWidth: "700px",
+    textAlign: "center",
+    color: "red",
   },
 }));
 
