@@ -11,10 +11,16 @@ import Link from "@material-ui/core/Link";
 function WriteCheque(props) {
   const classes = useStyles();
 
-  let initialNumber = parseInt(props.value);
+  //Check if we have to calculate cents
+  let doesDecimalExist = false;
+  if (props.value.includes(".")) doesDecimalExist = true;
+
+  let intNumber = parseInt(props.value);
+  let stringNumber = props.value;
+
   let finalWord = "";
   //If the number is 0 then return zero
-  if (initialNumber === 0 || isNaN(initialNumber)) {
+  if (intNumber === 0 || isNaN(intNumber)) {
     return (
       <Typography variant="h3" className={classes.cheque}>
         zero dollars
@@ -22,48 +28,42 @@ function WriteCheque(props) {
     );
   }
 
-  if (initialNumber < 20) {
-    return (
-      <Typography variant="h3" className={classes.cheque}>
-        {units[initialNumber]} dollars
-      </Typography>
-    );
-  }
-
+  let preDecimalNumber = stringNumber.split(".")[0];
   //Add zeros in front of the number so it has 10 digits
-  let stringNumber = initialNumber.toString();
-  let amountOfZeros = 10 - stringNumber.length;
+  let amountOfZeros = 10 - preDecimalNumber.length;
   for (let i = 0; i < amountOfZeros; i++) {
-    stringNumber = "0" + stringNumber;
+    preDecimalNumber = "0" + preDecimalNumber;
   }
 
   //Split the number into 4 sections, for example: 8462 --> [0][000][008][462]
+  console.log("preDecimalNumber", preDecimalNumber);
   let arrayOfScales = [];
-  for (let i = 0; i < stringNumber.length; i++) {
+  for (let i = 0; i < preDecimalNumber.length; i++) {
     if (i === 0) {
-      arrayOfScales.push(stringNumber[i]);
+      arrayOfScales.push(preDecimalNumber[i]);
     }
     if (i === 1) {
       arrayOfScales.push(
-        stringNumber[i] + stringNumber[i + 1] + stringNumber[i + 2]
+        preDecimalNumber[i] + preDecimalNumber[i + 1] + preDecimalNumber[i + 2]
       );
     }
     if (i === 4) {
       arrayOfScales.push(
-        stringNumber[i] + stringNumber[i + 1] + stringNumber[i + 2]
+        preDecimalNumber[i] + preDecimalNumber[i + 1] + preDecimalNumber[i + 2]
       );
     }
     if (i === 7) {
       arrayOfScales.push(
-        stringNumber[i] + stringNumber[i + 1] + stringNumber[i + 2]
+        preDecimalNumber[i] + preDecimalNumber[i + 1] + preDecimalNumber[i + 2]
       );
     }
   }
 
-  // console.log("arrayOfScales: ", arrayOfScales);
+  console.log("arrayOfScales: ", arrayOfScales);
 
   //Mini function that takes in a 3 digit value and returns it as words
   var getNumbersAsWords = (n) => {
+    console.log("n", n);
     if (n === "0") return "";
     let word = "";
     //If the number has a teen in it (example: 2318)
@@ -94,8 +94,6 @@ function WriteCheque(props) {
   };
 
   for (var i = 0; i < 4; i++) {
-    console.log("finalWord :", finalWord);
-    console.log("array of scales[i]" + arrayOfScales[i]);
     finalWord = finalWord + getNumbersAsWords(arrayOfScales[i]);
 
     if (arrayOfScales[i] !== "000" && arrayOfScales[i] !== "0") {
@@ -105,11 +103,21 @@ function WriteCheque(props) {
     }
   }
 
-  return (
-    <Typography variant="h3" className={classes.cheque}>
-      {finalWord} dollars
-    </Typography>
-  );
+  if (doesDecimalExist) {
+    //Write the cents out
+    let stringCents = getNumbersAsWords("0" + stringNumber.split(".")[1]);
+    return (
+      <Typography variant="h3" className={classes.cheque}>
+        {finalWord} dollars and {stringCents} cents
+      </Typography>
+    );
+  } else {
+    return (
+      <Typography variant="h3" className={classes.cheque}>
+        {finalWord} dollars
+      </Typography>
+    );
+  }
 }
 
 const App = () => {
