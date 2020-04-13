@@ -4,6 +4,9 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import { units, tens } from "./constants";
+import SvgIcon from "@material-ui/core/SvgIcon";
+import GitHubIcon from "@material-ui/icons/GitHub";
+import Link from "@material-ui/core/Link";
 
 function WriteCheque(props) {
   const classes = useStyles();
@@ -129,12 +132,18 @@ const App = () => {
 
         <Grid item>
           <Typography variant="h6" className={classes.text}>
+            <SvgIcon component={GitHubIcon} style={{ paddingRight: "20px" }} />
+            GitHub:{" "}
+            <Link href="https://github.com/rtxd/ChequeWriter">
+              https://github.com/rtxd/ChequeWriter
+            </Link>
+          </Typography>
+          <Typography variant="h6" className={classes.text}>
             The application will output the English words that express the
             number as a string of word (dollars and cents). The program should
             encode words exactly as you would say them in reading out the
             monetary amount.
           </Typography>
-          <br />
           <Typography variant="h6" className={classes.text}>
             Enter a dollar and cents amount (no currency symbols or commas are
             required for the input) which is less than 2 billion dollars. ie. A
@@ -181,10 +190,11 @@ const useStyles = makeStyles((theme) => ({
   text: {
     textAlign: "center",
     width: "700px",
-    padding: "30px",
+    padding: "20px",
   },
   cheque: {
     maxWidth: "700px",
+    textAlign: "center",
   },
 }));
 
