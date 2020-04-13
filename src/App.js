@@ -8,6 +8,7 @@ import SvgIcon from "@material-ui/core/SvgIcon";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import Link from "@material-ui/core/Link";
 
+//Check Constants file for array of words
 function WriteCheque(props) {
   const classes = useStyles();
   let throwError = false;
@@ -99,6 +100,9 @@ function WriteCheque(props) {
     return word;
   };
 
+  //Go through each section and add the scale word after it
+  //for example adding words after each section:
+  //[0] billion [000] million [008] thousand [462]
   for (var i = 0; i < 4; i++) {
     finalWord = finalWord + getNumbersAsWords(arrayOfScales[i]);
 
@@ -109,7 +113,7 @@ function WriteCheque(props) {
     }
   }
 
-  // Throw Error if invalid number
+  // Display an error if invalid number
   if (throwError)
     return (
       <Typography variant="h3" className={classes.error}>
@@ -119,7 +123,8 @@ function WriteCheque(props) {
 
   //Final Return statement
   if (doesDecimalExist) {
-    //Write the cents out
+    //Write the cents out (if there is only one digit after the decimal place
+    // then add a 0 to the end because its a tens column)
     if (fractionalNumber.length == 1) fractionalNumber = fractionalNumber + "0";
     let stringCents = getNumbersAsWords("0" + fractionalNumber);
     return (
