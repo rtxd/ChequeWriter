@@ -20,13 +20,13 @@ function WriteCheque(props) {
   let stringNumber = props.value;
   let wholeNumber = stringNumber.split(".")[0];
   let fractionalNumber = stringNumber.split(".")[1];
-  console.log("fractionalNumber", fractionalNumber);
   let finalWord = "";
 
   // Run validation checks on number
   if (
     parseInt(props.value) <= 2000000000 &&
-    (fractionalNumber < 100 || fractionalNumber == null)
+    (fractionalNumber < 100 || fractionalNumber == null) &&
+    parseInt(props.value) > 0
   )
     throwError = false;
   else throwError = true;
@@ -47,7 +47,6 @@ function WriteCheque(props) {
   }
 
   //Split the number into 4 sections, for example: 8462 --> [0][000][008][462]
-  console.log("preDecimalNumber", wholeNumber);
   let arrayOfScales = [];
   for (let i = 0; i < wholeNumber.length; i++) {
     if (i === 0) {
@@ -72,7 +71,6 @@ function WriteCheque(props) {
 
   //Mini function that takes in a 3 digit value and returns it as words
   var getNumbersAsWords = (n) => {
-    console.log("n", n);
     if (n === "0") return "";
     let word = "";
     //If the number has a teen in it (example: 2318)
@@ -82,7 +80,6 @@ function WriteCheque(props) {
       word = units[parseInt(n[1] + n[2])] + " " + word;
       //Write the hundreds
       if (n[0] !== "0") {
-        console.log("this is happening");
         word = units[n[0]] + " hundred and " + word;
       }
     } else {
@@ -123,7 +120,7 @@ function WriteCheque(props) {
   //Final Return statement
   if (doesDecimalExist) {
     //Write the cents out
-    //TODO: make sure cents .5 returns fifty and not 5 cents
+    if (fractionalNumber.length == 1) fractionalNumber = fractionalNumber + "0";
     let stringCents = getNumbersAsWords("0" + fractionalNumber);
     return (
       <Typography variant="h3" className={classes.cheque}>
@@ -147,7 +144,6 @@ const App = () => {
     setValue(event.target.value);
   };
 
-  console.log("value :", value);
   return (
     <div className={classes.root}>
       <Grid container direction="column" justify="center" alignItems="center">
