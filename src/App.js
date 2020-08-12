@@ -71,7 +71,7 @@ function WriteCheque(props) {
   }
 
   //Mini function that takes in a 3 digit value and returns it as words
-  var getNumbersAsWords = (n) => {
+  let getNumbersAsWords = (n) => {
     if (n === "0") return "";
     let word = "";
     //If the number has a teen in it (example: 2318)
@@ -84,7 +84,7 @@ function WriteCheque(props) {
         word = units[n[0]] + " hundred and " + word;
       }
     } else {
-      for (var i = n.length; i > 0; i--) {
+      for (let i = n.length; i > 0; i--) {
         //Write the units
         if (i === n.length) word = units[parseInt(n[i - 1])] + " " + word;
         //Write the tens
@@ -103,7 +103,7 @@ function WriteCheque(props) {
   //Go through each section and add the scale word after it
   //for example adding words after each section:
   //[0] billion [000] million [008] thousand [462]
-  for (var i = 0; i < 4; i++) {
+  for (let i = 0; i < 4; i++) {
     finalWord = finalWord + getNumbersAsWords(arrayOfScales[i]);
 
     if (arrayOfScales[i] !== "000" && arrayOfScales[i] !== "0") {
@@ -145,10 +145,6 @@ const App = () => {
   const [value, setValue] = useState("0");
   const classes = useStyles();
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
-
   return (
     <div className={classes.root}>
       <Grid container direction="column" justify="center" alignItems="center">
@@ -188,7 +184,7 @@ const App = () => {
             InputLabelProps={{
               shrink: true,
             }}
-            onChange={handleChange}
+            onChange={(e) => setValue(e.target.value)}
             variant="filled"
           />
         </Grid>
